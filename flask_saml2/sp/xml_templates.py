@@ -15,8 +15,7 @@ class AuthnRequest(XmlTemplate):
         return self.element('AuthnRequest', attrs={
             'ID': self.params['REQUEST_ID'],
             'Version': '2.0',
-            'ForceAuthn': 'false',
-            'IsPassive': 'false',
+            'ForceAuthn': 'True',
             'IssueInstant': self.params['ISSUE_INSTANT'],
             'Destination': self.params['DESTINATION'],
             'ProtocolBinding': 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
