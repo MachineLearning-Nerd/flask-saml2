@@ -132,6 +132,7 @@ class IdPHandler:
     def get_authn_request(
         self,
         template=AuthnRequest,
+        force_auth=False,
         **parameters,
     ):
         """
@@ -139,6 +140,7 @@ class IdPHandler:
         """
         return template({
             'REQUEST_ID': get_random_id(),
+            'FORCE_AUTH': force_auth,
             'ISSUE_INSTANT': self.format_datetime(utcnow()),
             'DESTINATION': self.get_idp_sso_url(),
             'ISSUER': self.sp.get_sp_entity_id(),
@@ -168,9 +170,9 @@ class IdPHandler:
     def make_login_request_url(
         self,
         relay_state: Optional[str] = None,
-    ) -> str:
+    force_auth = False) -> str:
         """Make a LoginRequest url and query string for this IdP."""
-        authn_request = self.get_authn_request()
+        authn_request = self.get_authn_request(force_auth=force_auth)
         saml_request = self.encode_saml_string(authn_request.get_xml_string())
 
         parameters = [('SAMLRequest', saml_request)]
