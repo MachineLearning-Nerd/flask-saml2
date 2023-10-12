@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : utils.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 15:31:33
+# Last Modified Date: 12/10/2023 15:33:26
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 import datetime
 import pathlib
 import typing as T
@@ -99,6 +107,7 @@ def certificate_from_string(certificate: str, format=serialization.Encoding.PEM)
     :param certificate: A certificate string.
     :param format: The format of the certificate, from the serialization.Encoding class.
     """
+    print(f'flask-saml2:certificate:{certificate}', flush=True)
     return x509.load_pem_x509_certificate(certificate.encode('utf-8'), default_backend())
 
 def certificate_from_file(filename: str, format=serialization.Encoding.PEM) -> x509.Certificate:
@@ -108,6 +117,8 @@ def certificate_from_file(filename: str, format=serialization.Encoding.PEM) -> x
     :param format: The format of the certificate, from the serialization.Encoding class.
     """
     with open(filename, 'rb') as handle:
+        data = handle.read()
+        print(f'flask-saml2:data:{data}', flush=True)
         return certificate_from_string(handle.read().decode('utf-8'), format)
 
 def private_key_from_string(private_key: str, format=serialization.Encoding.PEM):
