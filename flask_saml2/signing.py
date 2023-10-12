@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : signing.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 14:14:50
+# Last Modified Date: 12/10/2023 14:14:50
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 """
 Functions and classes that deal with signing data and making digests.
 """
@@ -103,8 +111,7 @@ class RsaSha1Signer:
         signature = self.private_key.sign(
             data,
             padding.PKCS1v15(),
-            hashes.SHA1(),
-            default_backend()
+            hashes.SHA1()
         )
         return base64.b64encode(signature).decode('ascii')
 
@@ -118,8 +125,7 @@ class RsaSha256Signer:
         signature = self.private_key.sign(
             data,
             padding.PKCS1v15(),
-            hashes.SHA256(),
-            default_backend()
+            hashes.SHA256()
         )
         return base64.b64encode(signature).decode('ascii')
 
