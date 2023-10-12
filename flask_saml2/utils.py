@@ -4,7 +4,7 @@
 # File              : utils.py
 # Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 # Date              : 12/10/2023 15:31:33
-# Last Modified Date: 12/10/2023 15:33:26
+# Last Modified Date: 12/10/2023 15:38:03
 # Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 import datetime
 import pathlib
@@ -117,9 +117,9 @@ def certificate_from_file(filename: str, format=serialization.Encoding.PEM) -> x
     :param format: The format of the certificate, from the serialization.Encoding class.
     """
     with open(filename, 'rb') as handle:
-        data = handle.read()
+        data = handle.read().decode('utf-8')
         print(f'flask-saml2:data:{data}', flush=True)
-        return certificate_from_string(handle.read().decode('utf-8'), format)
+        return certificate_from_string(data, format)
 
 def private_key_from_string(private_key: str, format=serialization.Encoding.PEM):
     """Load a private key from a string.
