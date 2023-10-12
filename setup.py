@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : setup.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 16:09:08
+# Last Modified Date: 12/10/2023 16:09:08
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 from setuptools import find_packages, setup
 
 with open('README.rst') as readme:
@@ -27,7 +34,7 @@ setup_kwargs = dict(
         'Flask>=1.0.0',
         'signxml>=2.4.0',
         'lxml>=3.8.0',
-        'pyopenssl<18',
+        'pyopenssl>18',
         'defusedxml>=0.5.0',
         'pytz>=0',
         'iso8601~=0.1.12',
