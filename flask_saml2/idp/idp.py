@@ -1,10 +1,17 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : idp.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 12:50:21
+# Last Modified Date: 12/10/2023 12:50:57
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 from typing import Generic, Iterable, Optional, Tuple, TypeVar
 
 from flask import Blueprint, current_app, render_template, url_for
 
 from flask_saml2.exceptions import CannotHandleAssertion, UserNotAuthorized
 from flask_saml2.signing import Digester, RsaSha1Signer, Sha1Digester, Signer
-from flask_saml2.types import X509, PKey
 from flask_saml2.utils import certificate_to_string, import_string
 
 from .sphandler import SPHandler
@@ -84,13 +91,13 @@ class IdentityProvider(Generic[U]):
         """
         return self.get_metadata_url()
 
-    def get_idp_certificate(self) -> Optional[X509]:
+    def get_idp_certificate(self):
         """Get the public certificate for this IdP.
         If this IdP does not sign its requests, returns None.
         """
         return self.get_idp_config().get('certificate')
 
-    def get_idp_private_key(self) -> Optional[PKey]:
+    def get_idp_private_key(self):
         """Get the private key for this IdP.
         If this IdP does not sign its requests, returns None.
         """
@@ -100,13 +107,13 @@ class IdentityProvider(Generic[U]):
         """Should the IdP autosubmit responses to the Service Provider?"""
         return self.get_idp_config().get('autosubmit', False)
 
-    def get_idp_signer(self) -> Optional[Signer]:
+    def get_idp_signer(self):
         """Get the signing algorithm used by this IdP."""
         private_key = self.get_idp_private_key()
         if private_key is not None:
             return self.idp_signer_class(private_key)
 
-    def get_idp_digester(self) -> Digester:
+    def get_idp_digester(self):
         """Get the method used to compute digests for the IdP."""
         return self.idp_digester_class()
 

@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : sphandler.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 12:47:38
+# Last Modified Date: 12/10/2023 12:47:38
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 import base64
 import datetime
 import logging
@@ -7,7 +15,6 @@ from urllib.parse import urlparse
 from flask_saml2 import codex
 from flask_saml2.exceptions import CannotHandleAssertion
 from flask_saml2.signing import Digester, Signer
-from flask_saml2.types import X509
 from flask_saml2.utils import get_random_id, utcnow
 from flask_saml2.xml_templates import XmlTemplate
 
@@ -24,7 +31,7 @@ class SPHandler(object):
     """
     entity_id: str
     acs_url = None
-    certificate: Optional[X509] = None
+    certificate: Optional[str] = None
     display_name: str = None
 
     subject_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:email'
@@ -39,7 +46,7 @@ class SPHandler(object):
         *,
         entity_id: str,
         acs_url: str = None,
-        certificate: Optional[X509] = None,
+        certificate: Optional[str] = None,
         display_name: str = None,
     ):
         self.idp = idp

@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : sp.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 12:48:11
+# Last Modified Date: 12/10/2023 12:48:33
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 import urllib.parse
 from typing import Iterable, Optional, Tuple
 from urllib.parse import urljoin
@@ -8,7 +16,6 @@ from flask import (
 
 from flask_saml2.exceptions import CannotHandleAssertion
 from flask_saml2.signing import Digester, RsaSha1Signer, Sha1Digester, Signer
-from flask_saml2.types import X509, PKey
 from flask_saml2.utils import certificate_to_string, import_string
 
 from .idphandler import AuthData, IdPHandler
@@ -85,15 +92,15 @@ class ServiceProvider:
         """
         return self.get_metadata_url()
 
-    def get_sp_certificate(self) -> Optional[X509]:
+    def get_sp_certificate(self):
         """Get the public certificate for this SP."""
         return self.get_sp_config().get('certificate')
 
-    def get_sp_private_key(self) -> Optional[PKey]:
+    def get_sp_private_key(self):
         """Get the private key for this SP."""
         return self.get_sp_config().get('private_key')
 
-    def get_sp_signer(self) -> Optional[Signer]:
+    def get_sp_signer(self):
         """Get the signing algorithm used by this SP."""
         private_key = self.get_sp_private_key()
         if private_key is not None:

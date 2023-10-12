@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : idphandler.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 12:52:50
+# Last Modified Date: 12/10/2023 12:53:01
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 import datetime
 from typing import Mapping, Optional
 from urllib.parse import urlencode
@@ -8,7 +16,6 @@ import iso8601
 from flask_saml2 import codex
 from flask_saml2.exceptions import CannotHandleAssertion
 from flask_saml2.signing import sign_query_parameters
-from flask_saml2.types import X509
 from flask_saml2.utils import get_random_id, utcnow
 from flask_saml2.xml_templates import XmlTemplate
 
@@ -65,7 +72,7 @@ class IdPHandler:
     """
     entity_id: str
     display_name: Optional[str] = None
-    certificate: Optional[X509] = None
+    certificate = None
 
     def __init__(
         self,
@@ -75,7 +82,7 @@ class IdPHandler:
         display_name: Optional[str] = None,
         sso_url: Optional[str] = None,
         slo_url: Optional[str] = None,
-        certificate: Optional[X509] = None,
+        certificate= None,
         **kwargs,
     ):
         """

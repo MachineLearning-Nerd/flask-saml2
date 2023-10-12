@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# Copyright: Mareana
+# File              : xml_parser.py
+# Author            : Dinesh Jinjala <dinesh.jinjala@mareana.com>
+# Date              : 12/10/2023 12:49:14
+# Last Modified Date: 12/10/2023 12:49:36
+# Last Modified By  : Dinesh Jinjala <dinesh.jinjala@mareana.com>
 """
 The :mod:`flask_saml2.xml_parser` provides tools
 for parsing XML documents from an IdP or a SP.
@@ -10,7 +18,7 @@ import defusedxml.lxml
 import lxml.etree
 from signxml import XMLVerifier
 
-from flask_saml2.types import X509, XmlNode
+from flask_saml2.types import XmlNode
 from flask_saml2.xml_templates import NAMESPACE_MAP
 
 
@@ -25,9 +33,9 @@ class XmlParser:
     xml_tree: XmlNode
 
     #: The certificate the document is signed with
-    certificate: Optional[X509] = None
+    certificate = None
 
-    def __init__(self, xml_string: str, certificate: Optional[X509]):
+    def __init__(self, xml_string: str, certificate):
         """
         :param xml_string: The XML string to parse
         :param x509cert: A preshared X509 certificate to validate the signed
@@ -62,7 +70,7 @@ class XmlParser:
         """
         raise NotImplementedError
 
-    def parse_signed(self, xml_tree: XmlNode, certificate: X509) -> XmlNode:
+    def parse_signed(self, xml_tree: XmlNode, certificate) -> XmlNode:
         """
         Replaces all parameters with only the signed parameters. You should
         provide an x509 certificate obtained out-of-band, usually via the
