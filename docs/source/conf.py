@@ -38,7 +38,6 @@ pygments_style = 'sphinx'
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3.7", None),
     "flask": ("https://flask.palletsprojects.com/en/1.1.x", None),
-    "OpenSSL": ("https://www.pyopenssl.org/en/stable/", None),
 }
 
 nitpick_ignore = [

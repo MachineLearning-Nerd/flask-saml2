@@ -7,9 +7,12 @@ import logging
 from typing import ClassVar, Sequence, Tuple, Union
 from urllib.parse import urlencode
 
-import OpenSSL.crypto
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.backends import default_backend
+import base64
 
-from flask_saml2.types import X509, PKey, XmlNode
+from flask_saml2.types import XmlNode
 
 from .utils import certificate_to_string
 from .xml_templates import XmlTemplate
@@ -90,27 +93,35 @@ class Signer:
         """Sign some binary data and return the string output."""
         raise NotImplementedError
 
-
-class RsaSha1Signer(Signer):
+class RsaSha1Signer:
     uri = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
 
-    def __init__(self, key: Union[X509, PKey]):
-        self.key = key
+    def __init__(self, private_key):
+        self.private_key = private_key
 
     def __call__(self, data: bytes):
-        data = OpenSSL.crypto.sign(self.key, data, "sha1")
-        return base64.b64encode(data).decode('ascii')
+        signature = self.private_key.sign(
+            data,
+            padding.PKCS1v15(),
+            hashes.SHA1(),
+            default_backend()
+        )
+        return base64.b64encode(signature).decode('ascii')
 
-
-class RsaSha256Signer(Signer):
+class RsaSha256Signer:
     uri = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
 
-    def __init__(self, key: Union[X509, PKey]):
-        self.key = key
+    def __init__(self, private_key):
+        self.private_key = private_key
 
     def __call__(self, data: bytes):
-        data = OpenSSL.crypto.sign(self.key, data, "sha256")
-        return base64.b64encode(data).decode('ascii')
+        signature = self.private_key.sign(
+            data,
+            padding.PKCS1v15(),
+            hashes.SHA256(),
+            default_backend()
+        )
+        return base64.b64encode(signature).decode('ascii')
 
 
 class SignedInfoTemplate(XmlTemplate):
@@ -195,7 +206,7 @@ class SignatureTemplate(XmlTemplate):
     def sign(
         cls,
         subject: str,
-        certificate: X509,
+        certificate,
         digester: Digester,
         signer: Signer,
         reference_uri: str,
@@ -269,7 +280,7 @@ class SignableTemplate(XmlTemplate):
 
     def sign(
         self,
-        certificate: X509,
+        certificate,
         digester: Digester,
         signer: Signer,
     ) -> XmlNode:
@@ -287,7 +298,7 @@ class SignableTemplate(XmlTemplate):
 
     def make_signature(
         self,
-        certificate: X509,
+        certificate,
         digester: Digester,
         signer: Signer,
     ) -> SignatureTemplate:

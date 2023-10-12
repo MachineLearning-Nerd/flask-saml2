@@ -17,13 +17,13 @@ Dependencies
 These external dependencies must be installed
 before ``flask_saml2`` and it's dependencies can be installed.
 
-OpenSSL
--------
+.. OpenSSL
+.. -------
 
-``flask-saml2`` relies on the :doc:`pyopenssl <OpenSSL:index>` library,
-which requires the ``openssl`` library to be installed.
-Please consult the documentation on :doc:`installing pyopenssl <OpenSSL:install>`
-for installation requirements.
+.. ``flask-saml2`` relies on the :doc:`pyopenssl <OpenSSL:index>` library,
+.. which requires the ``openssl`` library to be installed.
+.. Please consult the documentation on :doc:`installing pyopenssl <OpenSSL:install>`
+.. for installation requirements.
 
 lxml
 ----

@@ -3,13 +3,11 @@ import pathlib
 import typing as T
 import uuid
 from importlib import import_module
-from typing import Union
-
-import OpenSSL.crypto
+from cryptography import x509
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa, dsa, dh
 import pytz
-
-from . import types as TS
-
 
 class cached_property(property):
 
@@ -83,66 +81,58 @@ def utcnow() -> datetime.datetime:
     return datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 
 
-def certificate_to_string(certificate: TS.X509) -> str:
+
+def certificate_to_string(certificate: x509.Certificate) -> str:
     """
     Take an x509 certificate and encode it to a string suitable for adding to
     XML responses.
 
-    :param certificate: A certificate,
-        perhaps loaded from :func:`certificate_from_file`.
+    :param certificate: A certificate.
     """
-    pem_bytes = OpenSSL.crypto.dump_certificate(
-        OpenSSL.crypto.FILETYPE_PEM, certificate)
-    return ''.join(pem_bytes.decode('ascii').strip().split('\n')[1:-1])
+    pem_bytes = certificate.public_bytes(encoding=serialization.Encoding.PEM)
+    return pem_bytes.decode('utf-8')
 
-
-def certificate_from_string(
-    certificate: str,
-    format=OpenSSL.crypto.FILETYPE_PEM,
-) -> TS.X509:
+def certificate_from_string(certificate: str, format=serialization.Encoding.PEM) -> x509.Certificate:
     """
-    Load an X509 certificate from a string. This just strips off the header and
-    footer text.
+    Load an X509 certificate from a string. This just parses the PEM-encoded string.
 
-    :param str: A certificate string.
-    :param format: The format of the certificate, from :doc:`OpenSSL:api/crypto`.
+    :param certificate: A certificate string.
+    :param format: The format of the certificate, from the serialization.Encoding class.
     """
-    return OpenSSL.crypto.load_certificate(format, certificate)
+    return x509.load_pem_x509_certificate(certificate.encode('utf-8'), default_backend())
 
-
-def certificate_from_file(
-    filename: Union[str, pathlib.Path],
-    format=OpenSSL.crypto.FILETYPE_PEM,
-) -> TS.X509:
+def certificate_from_file(filename: str, format=serialization.Encoding.PEM) -> x509.Certificate:
     """Load an X509 certificate from ``filename``.
 
     :param filename: The path to the certificate on disk.
-    :param format: The format of the certificate, from :doc:`OpenSSL:api/crypto`.
+    :param format: The format of the certificate, from the serialization.Encoding class.
     """
-    with open(filename, 'r') as handle:
-        return certificate_from_string(handle.read(), format)
+    with open(filename, 'rb') as handle:
+        return certificate_from_string(handle.read().decode('utf-8'), format)
 
-
-def private_key_from_string(
-    private_key: str,
-    format=OpenSSL.crypto.FILETYPE_PEM,
-) -> TS.PKey:
+def private_key_from_string(private_key: str, format=serialization.Encoding.PEM):
     """Load a private key from a string.
 
-    :param str: A private key string.
-    :param format: The format of the private key, from :doc:`OpenSSL:api/crypto`.
+    :param private_key: A private key string.
+    :param format: The format of the private key, from the serialization.Encoding class.
     """
-    return OpenSSL.crypto.load_privatekey(format, private_key)
+    key = serialization.load_pem_private_key(private_key.encode('utf-8'), password=None, backend=default_backend())
 
+    # Check the type of the key and handle accordingly
+    if isinstance(key, rsa.RSAPrivateKey):
+        return key
+    elif isinstance(key, dsa.DSAPrivateKey):
+        return key
+    elif isinstance(key, dh.DHPrivateKey):
+        return key
+    else:
+        raise ValueError("Unsupported private key type")
 
-def private_key_from_file(
-    filename: Union[str, pathlib.Path],
-    format=OpenSSL.crypto.FILETYPE_PEM,
-) -> TS.PKey:
+def private_key_from_file(filename: str, format=serialization.Encoding.PEM) -> serialization.NoEncryption:
     """Load a private key from ``filename``.
 
     :param filename: The path to the private key on disk.
-    :param format: The format of the private key, from :doc:`OpenSSL:api/crypto`.
+    :param format: The format of the private key, from the serialization.Encoding class.
     """
-    with open(filename, 'r') as handle:
-        return private_key_from_string(handle.read(), format)
+    with open(filename, 'rb') as handle:
+        return private_key_from_string(handle.read().decode('utf-8'), format)
